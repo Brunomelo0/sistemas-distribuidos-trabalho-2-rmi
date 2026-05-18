@@ -5,14 +5,6 @@ import br.com.suauniversidade.common.InvocadorRemoto;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
-/**
- * Main do servidor: sobe o registry RMI embutido e publica o
- * {@link InvocadorRemotoImpl} sob o nome {@value #NOME_BINDING}.
- *
- * <p>Nao ha criacao manual de sockets em momento algum: a porta usada e'
- * a default do RMI ({@value #PORTA_REGISTRY}) e o transporte e' todo
- * gerenciado pelo runtime do Java RMI.</p>
- */
 public class ServidorRMI {
 
     public static final int PORTA_REGISTRY = 1099;

@@ -13,29 +13,8 @@ import java.net.InetAddress;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Despachante do lado servidor. Implementa, em termos da secao 5.2 do
- * Coulouris, os papeis de:
- *
- * <ul>
- *   <li>{@link #getRequest(byte[])} - desempacota a mensagem recebida pelo
- *       transporte RMI.</li>
- *   <li>{@link #sendReply(byte[], InetAddress, int)} - empacota a
- *       mensagem de resposta. Como o transporte e' RMI, este metodo apenas
- *       devolve os bytes da resposta; quem entrega no socket e' a propria
- *       camada do RMI.</li>
- *   <li>{@link #despachar(byte[])} - junta os dois passos acima e invoca
- *       o metodo do servico identificado por {@code objectReference} e
- *       {@code methodId}.</li>
- * </ul>
- *
- * <p>A assinatura de {@code sendReply} preserva os parametros de host e
- * porta do cliente para fins didaticos, ainda que sob RMI a entrega seja
- * implicita ao {@code return}.</p>
- */
 public class DespachanteServico {
 
-    /** Nome canonico do servico (campo objectReference das mensagens). */
     public static final String NOME_SERVICO = "ServicoControleAlunos";
 
     private final ServicoControleAlunos servico;
@@ -46,7 +25,6 @@ public class DespachanteServico {
 
     /**
      * Desempacota a mensagem de requisicao recebida pela porta servidora.
-     * Conforme o autor, devolve a propria {@link Mensagem}.
      */
     public Mensagem getRequest(byte[] requisicaoBytes) {
         return Marshaller.desempacotarMensagem(requisicaoBytes);
@@ -57,9 +35,6 @@ public class DespachanteServico {
      * sao informativos: o transporte ja sabe a quem entregar.
      */
     public byte[] sendReply(byte[] reply, InetAddress clientHost, int clientPort) {
-        // Em uma implementacao baseada em sockets, escreveriamos `reply` no
-        // socket do cliente identificado por (clientHost, clientPort). Sob
-        // RMI o transporte e' implicito: basta devolver os bytes.
         System.out.printf("  [transporte] reply de %d bytes para %s:%d%n",
                 reply.length,
                 clientHost != null ? clientHost.getHostAddress() : "?",
@@ -67,15 +42,6 @@ public class DespachanteServico {
         return reply;
     }
 
-    /**
-     * Fluxo completo do servidor: recebe bytes brutos, desempacota,
-     * dispara o metodo correto, empacota a resposta e a entrega.
-     *
-     * @param requisicaoBytes bytes da requisicao (chegam via RMI)
-     * @param clientHost      host do cliente que originou a chamada
-     * @param clientPort      porta do cliente
-     * @return bytes da resposta a ser devolvida pela camada RMI
-     */
     public byte[] despachar(byte[] requisicaoBytes, InetAddress clientHost, int clientPort) {
         Mensagem requisicao = getRequest(requisicaoBytes);
         Mensagem resposta = new Mensagem();
@@ -104,11 +70,6 @@ public class DespachanteServico {
         return sendReply(respostaBytes, clientHost, clientPort);
     }
 
-    /**
-     * Dispatcher por {@code methodId}. Cada caso desempacota os argumentos
-     * conforme a assinatura do metodo correspondente em
-     * {@link ServicoControleAlunos}.
-     */
     private byte[] invocar(String methodId, byte[] argsBytes) {
         switch (methodId) {
 
@@ -130,7 +91,6 @@ public class DespachanteServico {
             }
 
             case "matricularAluno": {
-                // Args complexos: extraidos via Map e reembalados para tipagem forte.
                 Map<String, Object> args = parseArgs(argsBytes);
                 Aluno aluno = Marshaller.desempacotar(
                         Marshaller.empacotar(args.get("aluno")), Aluno.class);

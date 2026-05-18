@@ -17,19 +17,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- * Proxy do cliente. Esconde a complexidade do protocolo requisicao-resposta:
- * cada metodo publico desta classe empacota os argumentos, chama
- * {@link #doOperation(RemoteObjectRef, String, byte[])} e desempacota o
- * retorno.
- *
- * <p>Conforme o livro texto (Coulouris, secao 5.2), o nucleo da
- * implementacao do cliente e' o metodo {@code doOperation}, que troca uma
- * requisicao por uma resposta atraves do objeto remoto.</p>
- */
+
 public class ProxyServico {
 
-    /** Referencia conceitual ao servico no servidor (campo objectReference). */
     private static final String NOME_SERVICO = "ServicoControleAlunos";
 
     private final InvocadorRemoto invocador;
@@ -40,22 +30,14 @@ public class ProxyServico {
         this.invocador = (InvocadorRemoto) registry.lookup("InvocadorRemoto");
     }
 
-    // =========================================================================
-    // doOperation - nucleo do protocolo requisicao-resposta (Coulouris 5.2)
-    // =========================================================================
 
     /**
      * Envia uma mensagem de requisicao para o objeto remoto e devolve a
      * resposta.
      *
-     * <p>A assinatura difere ligeiramente da sugerida pelo autor (que usa
-     * {@code int methodId}): aqui {@code methodId} e' uma String,
-     * conforme permitido pelo enunciado e mais natural para um dispatcher
-     * por nome.</p>
-     *
      * @param o         referencia conceitual ao objeto remoto que oferece o servico
      * @param methodId  nome do metodo a ser invocado
-     * @param arguments argumentos ja empacotados em representacao externa
+     * @param arguments argumentos ja empacotados
      * @return bytes do retorno (campo {@code arguments} da resposta)
      */
     public byte[] doOperation(RemoteObjectRef o, String methodId, byte[] arguments)
@@ -83,14 +65,6 @@ public class ProxyServico {
         }
         return resposta.getArguments();
     }
-
-    // =========================================================================
-    // API tipada que o cliente final usa. Cada metodo:
-    //  1. monta um Map<String,Object> com os argumentos nomeados;
-    //  2. empacota em JSON;
-    //  3. chama doOperation;
-    //  4. desempacota o retorno.
-    // =========================================================================
 
     public RemoteObjectRef criarDepartamento(String nome) throws Exception {
         Map<String, Object> args = new LinkedHashMap<>();

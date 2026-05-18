@@ -6,15 +6,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- * Mantem os objetos que vivem no servidor (Cursos, Departamentos) e
- * permite acessa-los a partir das {@link RemoteObjectRef} enviadas pelo
- * cliente. Esse mapeamento e' o que viabiliza a <b>passagem por
- * referencia</b> de objetos remotos.
- *
- * <p>Thread-safe via {@link ConcurrentHashMap} (varias requisicoes RMI
- * podem chegar em paralelo).</p>
- */
 public class RepositorioObjetosRemotos {
 
     private final Map<String, Object> objetos = new ConcurrentHashMap<>();

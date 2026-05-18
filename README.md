@@ -53,14 +53,12 @@ internamente.
 ## 3. Métodos do protocolo R-R
 
 
-| Método (autor)                                              | Onde mora             | Sinatura usada                                                                  |
+| Método (autor)                                              | Arquivo             | Assinatura usada                                                                  |
 |-------------------------------------------------------------|-----------------------|----------------------------------------------------------------------------------|
 | `public byte[] doOperation(RemoteObjectRef o, int methodId, byte[] arguments)` | `ProxyServico`        | `byte[] doOperation(RemoteObjectRef o, String methodId, byte[] arguments)`      |
 | `public byte[] getRequest()`                                | `DespachanteServico`  | `Mensagem getRequest(byte[] requisicaoBytes)`                                   |
 | `public void sendReply(byte[] reply, InetAddress, int)`     | `DespachanteServico`  | `byte[] sendReply(byte[] reply, InetAddress clientHost, int clientPort)`        |
 
-A alteração de `int` para `String` em `methodId` está autorizada pelo
-enunciado (“Os elementos objectReference e methodID podem ser Strings…”).
 O `sendReply` retorna `byte[]` em vez de `void` porque o transporte RMI
 entrega a resposta automaticamente pelo `return` da chamada remota — não foi aberto socket nem chamado send manualmente.
 
@@ -240,7 +238,7 @@ Cliente:
 
 ---
 
-## 10. Atendimento aos requisitos do enunciado
+## 10. Atendimento aos requisitos do trabalho
 
 | Requisito                                                                 | Onde                                                               |
 |---------------------------------------------------------------------------|--------------------------------------------------------------------|

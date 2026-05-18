@@ -8,16 +8,6 @@ import br.com.suauniversidade.model.AlunoPosGraduacao;
 
 import java.util.List;
 
-/**
- * Cliente principal. Demonstra cada um dos metodos remotos, evidenciando:
- *
- * <ul>
- *   <li><b>Passagem por valor:</b> objetos Aluno trafegam serializados em
- *       JSON (representacao externa de dados);</li>
- *   <li><b>Passagem por referencia:</b> Cursos e Departamentos vivem no
- *       servidor; o cliente carrega apenas {@link RemoteObjectRef}.</li>
- * </ul>
- */
 public class ClienteRMI {
 
     public static void main(String[] args) {
@@ -29,12 +19,10 @@ public class ClienteRMI {
             System.out.println("[cliente] conectado em " + host + ":" + porta);
             System.out.println();
 
-            // --- 1. Criar Departamento (objeto remoto, retornado por referencia) ---
             cabecalho("1) criarDepartamento(\"DComp - Computacao\")");
             RemoteObjectRef refDComp = proxy.criarDepartamento("DComp - Computacao");
             System.out.println("    -> retorno: " + refDComp);
 
-            // --- 2. Criar Cursos no Departamento (passagem por referencia do Dep) ---
             cabecalho("2) criarCurso(\"Ciencia da Computacao\", refDComp)");
             RemoteObjectRef refCC = proxy.criarCurso("Ciencia da Computacao", refDComp);
             System.out.println("    -> retorno: " + refCC);
@@ -43,7 +31,6 @@ public class ClienteRMI {
             RemoteObjectRef refSI = proxy.criarCurso("Sistemas de Informacao", refDComp);
             System.out.println("    -> retorno: " + refSI);
 
-            // --- 3. Matricular alunos (passagem por valor + por referencia) ---
             cabecalho("4) matricularAluno(AlunoGraduacao Ana, refCC)");
             Aluno ana = new AlunoGraduacao(1, "Ana Silva", "2024001");
             System.out.println("    aluno (cliente): " + ana);
@@ -63,7 +50,6 @@ public class ClienteRMI {
             System.out.println("    aluna (cliente): " + carla);
             proxy.matricularAluno(carla, refSI);
 
-            // --- 4. Folha de pagamento (passagem por valor de Remuneravel) ---
             cabecalho("7) emitirFolhaPagamento(Bruno)");
             double folhaBruno = proxy.emitirFolhaPagamento(bruno);
             System.out.printf("    -> retorno: R$ %.2f%n", folhaBruno);
@@ -72,21 +58,18 @@ public class ClienteRMI {
             double folhaCarla = proxy.emitirFolhaPagamento(carla);
             System.out.printf("    -> retorno: R$ %.2f%n", folhaCarla);
 
-            // --- 5. Listar alunos do curso (Curso por referencia) ---
             cabecalho("9) listarAlunosCurso(refCC)");
             List<Aluno> alunosCC = proxy.listarAlunosCurso(refCC);
             for (Aluno a : alunosCC) {
                 System.out.println("    - " + a);
             }
 
-            // --- 6. Listar cursos do departamento ---
             cabecalho("10) listarCursosDepartamento(refDComp)");
             List<String> cursos = proxy.listarCursosDepartamento(refDComp);
             for (String c : cursos) {
                 System.out.println("    - " + c);
             }
 
-            // --- 7. Caso de erro: tentar folha de pagamento para um nao-Remuneravel ---
             cabecalho("11) emitirFolhaPagamento(Ana) -- caso de erro esperado");
             try {
                 proxy.emitirFolhaPagamento(ana);

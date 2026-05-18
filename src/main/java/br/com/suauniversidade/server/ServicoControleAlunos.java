@@ -8,13 +8,6 @@ import br.com.suauniversidade.model.Remuneravel;
 
 import java.util.List;
 
-/**
- * Logica de negocio invocada pelo despachante.
- *
- * <p>Esta classe NAO conhece o protocolo: opera apenas em termos do
- * dominio. O dispatcher e' quem traduz {@code Mensagem -> chamada de
- * metodo}.</p>
- */
 public class ServicoControleAlunos {
 
     private final RepositorioObjetosRemotos repositorio;
@@ -23,7 +16,6 @@ public class ServicoControleAlunos {
         this.repositorio = repositorio;
     }
 
-    /** Metodo remoto: cria um Departamento no servidor e devolve sua referencia. */
     public RemoteObjectRef criarDepartamento(String nome) {
         Departamento dep = new Departamento(nome);
         RemoteObjectRef ref = repositorio.registrar("Departamento", dep);
@@ -31,7 +23,6 @@ public class ServicoControleAlunos {
         return ref;
     }
 
-    /** Metodo remoto: cria um Curso e o associa a um Departamento existente. */
     public RemoteObjectRef criarCurso(String nomeCurso, RemoteObjectRef refDepartamento) {
         Departamento dep = repositorio.resolver(refDepartamento, Departamento.class);
         Curso curso = new Curso(nomeCurso);
@@ -42,7 +33,6 @@ public class ServicoControleAlunos {
         return ref;
     }
 
-    /** Metodo remoto: matricula o aluno (passado por valor) no curso (passado por referencia). */
     public boolean matricularAluno(Aluno aluno, RemoteObjectRef refCurso) {
         Curso curso = repositorio.resolver(refCurso, Curso.class);
         curso.matricular(aluno);
@@ -51,7 +41,6 @@ public class ServicoControleAlunos {
         return true;
     }
 
-    /** Metodo remoto: calcula o pagamento de um aluno bolsista (passado por valor). */
     public double emitirFolhaPagamento(Aluno aluno) {
         if (!(aluno instanceof Remuneravel)) {
             throw new IllegalArgumentException(
@@ -64,7 +53,6 @@ public class ServicoControleAlunos {
         return pagamento;
     }
 
-    /** Metodo remoto: lista alunos de um curso (Curso por referencia, lista por valor). */
     public List<Aluno> listarAlunosCurso(RemoteObjectRef refCurso) {
         Curso curso = repositorio.resolver(refCurso, Curso.class);
         System.out.printf("  [servico] Listando %d alunos do curso %s%n",
@@ -72,7 +60,6 @@ public class ServicoControleAlunos {
         return curso.getAlunos();
     }
 
-    /** Metodo remoto: lista os nomes dos cursos de um departamento. */
     public List<String> listarCursosDepartamento(RemoteObjectRef refDepartamento) {
         Departamento dep = repositorio.resolver(refDepartamento, Departamento.class);
         List<String> nomes = dep.getCursos().stream()
