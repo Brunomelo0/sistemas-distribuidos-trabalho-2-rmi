@@ -1,8 +1,7 @@
 # Trabalho 2 — RMI / Sistemas Distribuídos (QXD0043)
 
 Reimplementação da **1ª questão do Trabalho 1** (controle de alunos/cursos)
-usando **Java RMI** com o **protocolo requisição-resposta** descrito na
-seção 5.2 de Coulouris. Não há criação manual de sockets.
+usando **Java RMI** com o **protocolo requisição-resposta**. Não há criação manual de sockets.
 
 ---
 
@@ -27,8 +26,7 @@ A interface RMI (`InvocadorRemoto`) declara um único método:
 `byte[] receberRequisicao(byte[] requisicaoBytes)`. Toda a semântica do
 domínio (qual método invocar, com quais argumentos) é codificada
 **dentro** dos bytes da requisição, no formato do protocolo
-requisição-resposta. O `methodId` é um nome de método (String), conforme
-permitido pelo enunciado.
+requisição-resposta. O `methodId` é um nome de método (String).
 
 ---
 
@@ -52,10 +50,8 @@ internamente.
 
 ---
 
-## 3. Métodos do protocolo R-R (Coulouris)
+## 3. Métodos do protocolo R-R
 
-Os métodos sugeridos pelo autor estão mapeados assim (o enunciado permite
-ajustar assinaturas):
 
 | Método (autor)                                              | Onde mora             | Sinatura usada                                                                  |
 |-------------------------------------------------------------|-----------------------|----------------------------------------------------------------------------------|
@@ -66,8 +62,7 @@ ajustar assinaturas):
 A alteração de `int` para `String` em `methodId` está autorizada pelo
 enunciado (“Os elementos objectReference e methodID podem ser Strings…”).
 O `sendReply` retorna `byte[]` em vez de `void` porque o transporte RMI
-entrega a resposta automaticamente pelo `return` da chamada remota — não
-abrimos socket nem chamamos send manualmente.
+entrega a resposta automaticamente pelo `return` da chamada remota — não foi aberto socket nem chamado send manualmente.
 
 ---
 
@@ -121,7 +116,7 @@ correta na reconstrução.
 
 ## 6. Representação externa de dados
 
-Conforme escolhido, **JSON via Gson**. O `Marshaller` expõe quatro
+Foi utilizado, **JSON via Gson**. O `Marshaller` expõe quatro
 operações simétricas:
 
 ```java
